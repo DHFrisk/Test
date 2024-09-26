@@ -20,11 +20,12 @@ To create tables you can either keep reading and apply Liquibase update or copy 
 
 ## Liquibase
 First of all you should install Liquibase:
-- Download and decompress the desired file (in my case .tar.gz)
+- Download and decompress the desired file (in my case .tar.gz) https://github.com/liquibase/liquibase/releases
 - This will create a new directory which will be your installation path, thus create an environment variable to be able to use ```liquibase``` executable file wherever you need it, i.e. in a Unix based O.S. run:
 ```
 $ export PATH=<installation_path>:$PATH
 ```
+After it has been installed you can configure it.
 - Create and configure a ```liquibase.properties``` file. Basic settings can be found in ```liquibase/liquibase.properties```, there will be configured DB credentials, DB connection, and ```changeLogFile```. This ```changeLogFile``` should be the migration that you'd like to execute
 - Being into the directory where ```liquibase.properties``` is located run:
 ```
