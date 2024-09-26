@@ -10,95 +10,53 @@ You can test if everything is fine by:
 
 
 
-# Postgres DB creation script
+# DB and Liquibase
 You can create it with Hasura too, but I like the old way :).
 This DB is only basic tables for a gym business, essential administration/management and some tables like ```Clients```, ```Payments```, etc.
 
-*If you require authentication/authorization functionality remember: Users should be assigned to Groups and Groups should have Permissions*
+To create tables you can either keep reading and apply Liquibase update or copy paste the content inside ```liquibase/V1_Tables_Creation.sql```.
 
-The below SQL query also can be found in Liquibase changelog ```./liquibase/changelog.sql```.
+> *If you require authentication/authorization functionality remember: Users should be assigned to Groups and Groups should have Permissions.*
 
-```sql
--- changelog
+## Liquibase
+First of all you should install Liquibase:
+- Download and decompress the desired file (in my case .tar.gz)
+- This will create a new directory which will be your installation path, thus create an environment variable to be able to use ```liquibase``` executable file wherever you need it, i.e. in a Unix based O.S. run:
+```
+$ export PATH=<installation_path>:$PATH
+```
+- Create and configure a ```liquibase.properties``` file. Basic settings can be found in ```liquibase/liquibase.properties```, there will be configured DB credentials, DB connection, and ```changeLogFile```. This ```changeLogFile``` should be the migration that you'd like to execute
+- Being into the directory where ```liquibase.properties``` is located run:
+```
+$ liquibase update
+```
+- If the migration was successful you should get an output like this:
+```
+####################################################
+##   _     _             _ _                      ##
+##  | |   (_)           (_) |                     ##
+##  | |    _  __ _ _   _ _| |__   __ _ ___  ___   ##
+##  | |   | |/ _` | | | | | '_ \ / _` / __|/ _ \  ##
+##  | |___| | (_| | |_| | | |_) | (_| \__ \  __/  ##
+##  \_____/_|\__, |\__,_|_|_.__/ \__,_|___/\___|  ##
+##              | |                               ##
+##              |_|                               ##
+##                                                ## 
+##  Get documentation at docs.liquibase.com       ##
+##  Get certified courses at learn.liquibase.com  ## 
+##                                                ##
+####################################################
+Starting Liquibase at 02:06:48 using Java 17.0.12 (version 4.29.2 #3683 built at 2024-08-29 16:45+0000)
+Liquibase Version: 4.29.2
+Liquibase Open Source 4.29.2 by Liquibase
+Running Changeset: V2_Adding_Columns.sql::raw::includeAll
 
--- Core tables creation script
-create table Groups(
-id serial primary key not null,
-name varchar(50) not null,
-creation_date timestamp not null default current_date,
-modification_date timestamp null
-);
-
-create table Users(
-id serial primary key not null,
-name varchar(50) unique not null,
-password varchar(10485760) not null,
-creation_date timestamp not null default current_date,
-modification_date timestamp null
-);
-
-create table Permissions(
-id serial primary key not null,
-name varchar(50) not null,
-creation_date timestamp not null default current_date,
-modification_date timestamp null
-);
-
-create table Groups_Permissions(
-id serial primary key not null,
-group_id int not null,
-permission_id int not null,
-foreign key(group_id) references Groups(id),
-foreign key(permission_id) references Permissions(id),
-creation_date timestamp not null default current_date,
-modification_date timestamp null
-);
-
-
-create table Groups_Users(
-id serial primary key not null,
-group_id int not null,
-user_id int not null,
-foreign key(group_id) references Groups(id),
-foreign key(user_id) references Users(id),
-creation_date timestamp not null default current_date,
-modification_date timestamp null
-);
-
-
-create table SubscriptionPlans(
-id serial primary key not null,
-name varchar(50) not null,
-fee decimal(10, 2) not null,
-benefits text,
-creation_date timestamp not null default current_date,
-modification_date timestamp null
-);
-
-create table Clients(
-id serial primary key not null,
-name varchar(50) not null,
-last_name varchar(50) not null,
-subscription_plan_id int not null,
-foreign key(subscription_plan_id) references SubscriptionPlans(id),
-creation_date timestamp not null default current_date,
-modification_date timestamp null
-);
-
-create table Payments(
-id serial primary key not null,
-payment_date timestamp not null,
-paid_quantity decimal(10,2) not null,
-client_id int not null,
-subscription_plan_id int not null,
-foreign key(client_id) references Clients(id),
-foreign key(subscription_plan_id) references SubscriptionPlans(id),
-creation_date timestamp not null default current_date,
-modification_date timestamp null
-);
-
-
-
+UPDATE SUMMARY
+Run:                          1
+Previously run:               0
+Filtered out:                 0
+-------------------------------
+Total change sets:            1
 ```
 
 # Project structure
