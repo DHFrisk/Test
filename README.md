@@ -12,13 +12,16 @@ You can test if everything is fine by:
 
 # Postgres DB creation script
 You can create it with Hasura too, but I like the old way :).
-This DB is only basic tables for a gym business, essential administration/management and some tables like ```Clients```, ```Payments``, etc.
+This DB is only basic tables for a gym business, essential administration/management and some tables like ```Clients```, ```Payments```, etc.
 
 *If you require authentication/authorization functionality remember: Users should be assigned to Groups and Groups should have Permissions*
 
-
+The below SQL query also can be found in Liquibase changelog ```./liquibase/changelog.sql```.
 
 ```sql
+-- changelog
+
+-- Core tables creation script
 create table Groups(
 id serial primary key not null,
 name varchar(50) not null,
@@ -30,10 +33,8 @@ create table Users(
 id serial primary key not null,
 name varchar(50) unique not null,
 password varchar(10485760) not null,
-group_id int not null,
 creation_date timestamp not null default current_date,
-modification_date timestamp null,
-foreign_key(group_id) references Groups(id)
+modification_date timestamp null
 );
 
 create table Permissions(
@@ -95,6 +96,9 @@ foreign key(subscription_plan_id) references SubscriptionPlans(id),
 creation_date timestamp not null default current_date,
 modification_date timestamp null
 );
+
+
+
 ```
 
 # Project structure
